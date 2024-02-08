@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 3.5)
 project(cpp_basic)
 
 # Set the minimum required version of C++ (C++14 used as an example)
-set(CMAKE_CXX_STANDARD 14)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+set(CMAKE_CXX_STANDARD 11) # C++11...
+set(CMAKE_CXX_STANDARD_REQUIRED ON) #...is required...
+set(CMAKE_CXX_EXTENSIONS ON) #...with compiler extensions like gnu++11
 
 # Find necessary ROS packages and libraries
 find_package(ament_cmake REQUIRED)
