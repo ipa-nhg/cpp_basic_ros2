@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(cpp_basic)
 
-# Set the minimum required version of C++ (C++14 used as an example)
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -18,7 +17,7 @@ find_package(std_msgs REQUIRED)
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
 
 # Create the executable
-add_executable(basic_node ${SOURCE_FILES})
+add_executable(basic_node src/basic_node.cpp)
 
 ament_target_dependencies(basic_node
   rclcpp

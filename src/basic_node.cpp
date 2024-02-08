@@ -13,47 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <chrono>
+#include <functional>
+#include <memory>
+#include <string>
+
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-class HelloWorldPublisher : public rclcpp::Node {
-public:
-  HelloWorldPublisher() : Node("hello_world_publisher") {
-    // Create a publisher for the "chatter" topic
-    publisher_ = create_publisher<std_msgs::msg::String>("chatter", 10);
+using namespace std::chrono_literals;
 
-    // Create a timer to publish the message at a regular interval
-    timer_ = create_wall_timer(std::chrono::seconds(1),
-                               std::bind(&HelloWorldPublisher::publishHelloWorld, this));
-  }
+/* This example creates a subclass of Node and uses std::bind() to register a
+* member function as a callback from the timer. */
 
-private:
-  void publishHelloWorld() {
-    // Create a message and set the data
-    auto message = std_msgs::msg::String();
-    message.data = "Hello, World!";
+class HelloWorldPublisher : public rclcpp::Node 
+{
+  public:
+    HelloWorldPublisher()
+    : Node("minimal_publisher"), count_(0)
+    {
+      publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
+      timer_ = this->create_wall_timer(
+      500ms, std::bind(&HelloWorldPublisher::timer_callback, this));
+    }
 
-    // Publish the message
-    RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
-    publisher_->publish(message);
-  }
-
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
-  rclcpp::TimerBase::SharedPtr timer_;
+  private:
+    void timer_callback()
+    {
+      auto message = std_msgs::msg::String();
+      message.data = "Hello, world! " + std::to_string(count_++);
+      RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
+      publisher_->publish(message);
+    }
+    rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
+    size_t count_;
 };
 
-int main(int argc, char *argv[]) {
-  // Initialize the ROS 2 system
+int main(int argc, char * argv[])
+{
   rclcpp::init(argc, argv);
-
-  // Create an instance of the HelloWorldPublisher class
-  auto node = std::make_shared<HelloWorldPublisher>();
-
-  // Spin the node to process callbacks
-  rclcpp::spin(node);
-
-  // Shut down the ROS 2 system
+  rclcpp::spin(std::make_shared<HelloWorldPublisher>());
   rclcpp::shutdown();
-
   return 0;
 }
