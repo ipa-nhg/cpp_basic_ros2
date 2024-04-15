@@ -17,20 +17,32 @@ find_package(std_msgs REQUIRED)
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
 
 # Create the executable
-add_executable(basic_node src/basic_node.cpp)
+add_executable(basic_pub_node src/basic_pub_node.cpp)
+add_executable(basic_sub_node src/basic_sub_node.cpp)
 
-ament_target_dependencies(basic_node
+ament_target_dependencies(basic_pub_node
   rclcpp
 )
 
 # Link against necessary ROS libraries
-target_link_libraries(basic_node
+target_link_libraries(basic_pub_node
   ${rclcpp_LIBRARIES}
 )
 
+ament_target_dependencies(basic_sub_node
+  rclcpp
+)
+
+# Link against necessary ROS libraries
+target_link_libraries(basic_sub_node
+  ${rclcpp_LIBRARIES}
+)
+
+
 # Install the executable
 install(TARGETS
-  basic_node
+  basic_pub_node
+  basic_sub_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -30,9 +30,9 @@ class HelloWorldPublisher : public rclcpp::Node
 {
   public:
     HelloWorldPublisher()
-    : Node("minimal_publisher"), count_(0)
+    : Node("hello_world_publisher"), count_(0)
     {
-      publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
+      publisher_ = this->create_publisher<std_msgs::msg::String>("my_awesome_pub", 10);
       timer_ = this->create_wall_timer(
       500ms, std::bind(&HelloWorldPublisher::timer_callback, this));
     }
